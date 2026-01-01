@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakeRAG Clone - AI-Powered RAG Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .tagline {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .tech-badge {
+            background: #f0f0f0;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .deployment-section {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .deployment-section h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+        .deployment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .deployment-box {
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .deployment-box:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        .deployment-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .status-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 MakeRAG Clone</h1>
+            <p class="tagline">Production-Ready AI-Powered RAG Platform with Hybrid Search</p>
+            <div class="status-badge">✅ Fully Deployed on GitHub</div>
+            <div class="cta-buttons">
+                <a href="https://github.com/akashBv6680/makerag-clone" class="btn btn-primary">View Repository</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
+            </div>
+        </header>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>🔍 Hybrid Search</h3>
+                <p>Combines vector embeddings (FAISS) and knowledge graphs (Neo4j) for intelligent document retrieval with semantic understanding and entity relationships.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📄 Multi-Format Ingestion</h3>
+                <p>Support for PDF, DOCX, XLSX, TXT, and MD files. Automatic text extraction, chunking, and embedding generation.</p>
+            </div>
+            <div class="feature-card">
+                <h3>💬 AI Chat</h3>
+                <p>RAG-based conversational interface with source citations. Powered by advanced language models with context-aware responses.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔐 API Keys</h3>
+                <p>Project-based API key management. Secure authentication and rate limiting for production deployments.</p>
+            </div>
+            <div class="feature-card">
+                <h3>⚙️ Settings</h3>
+                <p>Configurable parameters for search behavior, embedding models, and retrieval strategies.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📊 Dashboard</h3>
+                <p>Comprehensive frontend interface for project management, document uploads, search queries, and analytics.</p>
+            </div>
+        </section>
+
+        <div class="deployment-section">
+            <h2>🛠️ Technology Stack</h2>
+            <div class="tech-stack">
+                <span class="tech-badge">FastAPI</span>
+                <span class="tech-badge">React</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">Neo4j</span>
+                <span class="tech-badge">FAISS</span>
+                <span class="tech-badge">LangChain</span>
+                <span class="tech-badge">OpenAI/Gemini</span>
+                <span class="tech-badge">Docker</span>
+                <span class="tech-badge">GitHub Pages</span>
+                <span class="tech-badge">Render</span>
+            </div>
+        </div>
+
+        <div class="deployment-section">
+            <h2>🚀 Deployment Status</h2>
+            <div class="deployment-grid">
+                <div class="deployment-box">
+                    <h4>Frontend</h4>
+                    <p><strong>Platform:</strong> GitHub Pages</p>
+                    <p><strong>Status:</strong> Ready to Deploy</p>
+                    <p><strong>Build:</strong> React + TypeScript</p>
+                </div>
+                <div class="deployment-box">
+                    <h4>Backend</h4>
+                    <p><strong>Platform:</strong> Render/Railway</p>
+                    <p><strong>Status:</strong> Ready to Deploy</p>
+                    <p><strong>Container:</strong> Docker</p>
+                </div>
+                <div class="deployment-box">
+                    <h4>Documentation</h4>
+                    <p><strong>Setup Guide:</strong> Included</p>
+                    <p><strong>Deployment Guide:</strong> Complete</p>
+                    <p><strong>API Docs:</strong> Available</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="deployment-section">
+            <h2>📚 Project Structure</h2>
+            <p style="margin-bottom: 15px;">MakeRAG Clone is organized as a full-stack application:</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>✓ <strong>Backend:</strong> FastAPI application with routers for auth, projects, documents, retrieval, chat, and settings</li>
+                <li>✓ <strong>Frontend:</strong> React application with TypeScript, React Router, and Tailwind CSS</li>
+                <li>✓ <strong>Databases:</strong> PostgreSQL (relational), Neo4j (knowledge graph), FAISS (vector storage)</li>
+                <li>✓ <strong>CI/CD:</strong> GitHub Actions workflows for automated deployment</li>
+                <li>✓ <strong>Documentation:</strong> Comprehensive guides for setup, deployment, and API usage</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>🔗 <strong>GitHub Repository:</strong> <a href="https://github.com/akashBv6680/makerag-clone" style="color: white; text-decoration: underline;">akashBv6680/makerag-clone</a></p>
+            <p style="margin-top: 15px;">Built with ❤️ as a comprehensive RAG platform for production use</p>
+            <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">© 2024 MakeRAG Clone. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
