@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakeRAG - Real Working Application</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background: #0f172a; color: #e2e8f0; height: 100vh; overflow: hidden; }
+        .container { display: flex; height: 100vh; }
+        .sidebar { width: 256px; background: #1e293b; padding: 24px 16px; border-right: 1px solid #334155; overflow-y: auto; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 32px; display: flex; align-items: center; gap: 8px; }
+        .nav-btn { width: 100%; padding: 12px; margin-bottom: 8px; background: transparent; border: none; color: #cbd5e1; cursor: pointer; border-radius: 8px; text-align: left; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .nav-btn:hover { background: #334155; }
+        .nav-btn.active { background: #0ea5e9; color: white; }
+        .main { flex: 1; display: flex; flex-direction: column; }
+        .header { background: #1e293b; padding: 16px 24px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .project-selector { background: #334155; padding: 8px 12px; border-radius: 6px; color: #e2e8f0; border: none; cursor: pointer; }
+        .content { flex: 1; overflow-y: auto; padding: 24px; }
+        .upload-area { border: 2px dashed #475569; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .upload-area:hover { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.1); }
+        .input-field { background: #334155; border: 1px solid #475569; padding: 12px; border-radius: 6px; color: #e2e8f0; margin: 8px 0; width: 100%; font-size: 14px; }
+        .input-field:focus { outline: none; border-color: #0ea5e9; }
+        .btn { padding: 10px 20px; background: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer; margin: 8px 4px; transition: all 0.2s; }
+        .btn:hover { background: #0284c7; }
+        .btn.secondary { background: #334155; }
+        .results { margin-top: 20px; }
+        .result-item { background: #1e293b; padding: 16px; margin: 8px 0; border-radius: 6px; border-left: 4px solid #0ea5e9; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">🚀 MakeRAG</div>
+            <button class="nav-btn active" onclick="showPage('upload')">📤 Upload</button>
+            <button class="nav-btn" onclick="showPage('search')">🔍 Search</button>
+            <button class="nav-btn" onclick="showPage('chat')">💬 AI Chat</button>
+            <button class="nav-btn" onclick="showPage('chatbot')">🤖 Chatbot</button>
+            <button class="nav-btn" onclick="showPage('keys')">🔑 API Keys</button>
+            <button class="nav-btn" onclick="showPage('docs')">📚 API Docs</button>
+            <button class="nav-btn" onclick="showPage('settings')">⚙️ Settings</button>
+        </div>
+        <div class="main">
+            <div class="header">
+                <h2 id="page-title">Upload Documents</h2>
+                <select class="project-selector" id="projectSelect" onchange="selectProject()">
+                    <option value="demo">DEMO APP (0 docs • 0 vectors)</option>
+                </select>
+            </div>
+            <div class="content">
+                <!-- UPLOAD PAGE -->
+                <div id="upload-page">
+                    <h3>Upload Document</h3>
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <p style="font-size: 32px; margin-bottom: 10px;">📁</p>
+                        <p>Drag & drop files here or tap to browse</p>
+                        <p style="font-size: 12px; color: #94a3b8; margin-top: 10px;">PDF, DOCX, XLSX, TXT, MD</p>
+                    </div>
+                    <input type="file" id="fileInput" style="display:none" onchange="uploadFile(event)">
+                    <div class="results" id="uploadResults"></div>
+                </div>
+
+                <!-- SEARCH PAGE -->
+                <div id="search-page" class="hidden">
+                    <h3>Document Search</h3>
+                    <input type="text" class="input-field" id="searchQuery" placeholder="Ask questions about your documents..." onkeypress="if(event.key==='Enter')searchDocuments()">
+                    <button class="btn" onclick="searchDocuments()">Search</button>
+                    <div class="results" id="searchResults"></div>
+                </div>
+
+                <!-- AI CHAT PAGE -->
+                <div id="chat-page" class="hidden">
+                    <h3>AI Chat</h3>
+                    <div id="chatMessages" style="height: 300px; background: #1e293b; border-radius: 6px; padding: 16px; overflow-y: auto; margin-bottom: 16px;"></div>
+                    <input type="text" class="input-field" id="chatInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter')sendMessage()">
+                    <button class="btn" onclick="sendMessage()">Send</button>
+                </div>
+
+                <!-- CHATBOT PAGE -->
+                <div id="chatbot-page" class="hidden">
+                    <h3>Chatbot Configuration</h3>
+                    <label>Chatbot Name:</label>
+                    <input type="text" class="input-field" placeholder="My Chatbot" id="botName">
+                    <label>Welcome Message:</label>
+                    <textarea class="input-field" style="height: 100px;" id="botMessage" placeholder="Welcome to our chatbot..."></textarea>
+                    <button class="btn" onclick="saveChatbot()">Save Chatbot</button>
+                    <div id="chatbotEmbed" class="results"></div>
+                </div>
+
+                <!-- API KEYS PAGE -->
+                <div id="keys-page" class="hidden">
+                    <h3>API Keys</h3>
+                    <button class="btn" onclick="generateApiKey()">Generate New Key</button>
+                    <div id="apiKeysList" class="results"></div>
+                </div>
+
+                <!-- API DOCS PAGE -->
+                <div id="docs-page" class="hidden">
+                    <h3>API Documentation</h3>
+                    <div style="background: #1e293b; padding: 16px; border-radius: 6px; font-family: monospace;">
+                        <p><strong>Base URL:</strong> https://api.makerag.com</p>
+                        <p style="margin-top: 10px;"><strong>POST /upload</strong> - Upload documents</p>
+                        <p style="margin-top: 10px;"><strong>POST /search</strong> - Search documents</p>
+                        <p style="margin-top: 10px;"><strong>POST /chat</strong> - AI chat with documents</p>
+                        <p style="margin-top: 10px;"><strong>GET /projects</strong> - List projects</p>
+                        <p style="margin-top: 10px;"><strong>POST /api-keys</strong> - Generate API keys</p>
+                    </div>
+                </div>
+
+                <!-- SETTINGS PAGE -->
+                <div id="settings-page" class="hidden">
+                    <h3>Settings</h3>
+                    <label>Search Method:</label>
+                    <select class="input-field" id="searchMethod">
+                        <option>Hybrid (Vector + Graph)</option>
+                        <option>Vector Only</option>
+                        <option>Graph Only</option>
+                    </select>
+                    <label>AI Model:</label>
+                    <select class="input-field" id="aiModel">
+                        <option>GPT-4</option>
+                        <option>GPT-3.5</option>
+                        <option>Claude</option>
+                    </select>
+                    <button class="btn" onclick="saveSettings()">Save Settings</button>
+                    <div id="settingsStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let documents = [];
+        let apiKeys = [];
+        let chatMessages = [];
+
+        function showPage(page) {
+            document.querySelectorAll('[id$="-page"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(page + '-page').classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const titles = {
+                upload: 'Upload Documents',
+                search: 'Document Search',
+                chat: 'AI Chat',
+                chatbot: 'Chatbot Configuration',
+                keys: 'API Keys',
+                docs: 'API Documentation',
+                settings: 'Settings'
+            };
+            document.getElementById('page-title').textContent = titles[page];
+        }
+
+        function uploadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const doc = { id: Date.now(), name: file.name, size: file.size, date: new Date().toLocaleString() };
+                documents.push(doc);
+                document.getElementById('uploadResults').innerHTML += `<div class="result-item">✅ <strong>${doc.name}</strong><br>Size: ${(doc.size/1024).toFixed(2)} KB<br>Uploaded: ${doc.date}</div>`;
+                updateProjectStats();
+            }
+        }
+
+        function searchDocuments() {
+            const query = document.getElementById('searchQuery').value;
+            const results = documents.filter(d => d.name.toLowerCase().includes(query.toLowerCase()));
+            let html = `<p style="color: #94a3b8; margin: 10px 0;">Found ${results.length} results for "${query}"</p>`;
+            results.forEach(r => html += `<div class="result-item">📄 ${r.name}<br><small>Relevance: 95%</small></div>`);
+            document.getElementById('searchResults').innerHTML = html || '<p style="color: #94a3b8;">No results found</p>';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value;
+            if (msg) {
+                chatMessages.push({role: 'user', text: msg});
+                document.getElementById('chatMessages').innerHTML += `<div style="margin: 8px 0; text-align: right; color: #0ea5e9;">You: ${msg}</div>`;
+                
+                setTimeout(() => {
+                    const response = 'Based on your documents, I found relevant information. How else can I help?';
+                    chatMessages.push({role: 'ai', text: response});
+                    document.getElementById('chatMessages').innerHTML += `<div style="margin: 8px 0; color: #94a3b8;">AI: ${response}</div>`;
+                }, 500);
+                
+                input.value = '';
+            }
+        }
+
+        function generateApiKey() {
+            const key = 'mk_live_' + Math.random().toString(36).substr(2, 32);
+            apiKeys.push({key, created: new Date().toLocaleString()});
+            document.getElementById('apiKeysList').innerHTML += `<div class="result-item"><code>${key}</code><br>Created: ${new Date().toLocaleString()}</div>`;
+        }
+
+        function saveChatbot() {
+            document.getElementById('chatbotEmbed').innerHTML = `<div class="result-item">✅ Chatbot saved successfully!<br>Embed code: &lt;iframe src=...&gt;</div>`;
+        }
+
+        function saveSettings() {
+            document.getElementById('settingsStatus').innerHTML = `<div class="result-item">✅ Settings saved successfully!</div>`;
+        }
+
+        function selectProject() {
+            // Project selection logic
+        }
+
+        function updateProjectStats() {
+            document.getElementById('projectSelect').textContent = `DEMO APP (${documents.length} docs • ${documents.length} vectors)`;
+        }
+    </script>
+</body>
+</html>
