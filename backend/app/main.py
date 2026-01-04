@@ -4,8 +4,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 import json, uuid, hashlib
 
-app = FastAPI(title="MakeRAG API", version="2.0.0")
-
+app = FastAPI(title="MakeRAG API", version="2.0.1")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 # In-memory storage for demo
