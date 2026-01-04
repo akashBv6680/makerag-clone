@@ -1,222 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MakeRAG - Intelligent Document Search & Chat</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
-.container{max-width:900px;width:95%;background:white;border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,0.3);overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
-@media(max-width:768px){.container{grid-template-columns:1fr}}
-.sidebar{background:#1a1a1a;color:white;padding:40px;}
-.sidebar h1{font-size:28px;margin-bottom:20px;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.features{margin-top:30px}
-.feature{margin:20px 0;display:flex;gap:15px}
-.feature-icon{font-size:24px}
-.feature-text h3{font-size:14px;margin-bottom:5px}.form-section{padding:40px;}
-.form-section h2{margin-bottom:10px;color:#333}.form-section p{color:#999;margin-bottom:30px;font-size:14px}
-.tabs{display:flex;gap:0;margin-bottom:30px;border-bottom:2px solid #eee}.tab-btn{flex:1;padding:15px;border:none;background:white;color:#666;font-weight:500;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.3s}
-.tab-btn.active{color:#667eea;border-bottom-color:#667eea}
-.tab-content{display:none}.tab-content.active{display:block}.form-group{margin-bottom:20px}
-label{display:block;margin-bottom:8px;color:#333;font-weight:600;font-size:14px}
-input{width:100%;padding:12px 15px;border:1px solid #ddd;border-radius:8px;font-size:16px;transition:border 0.3s}
-input:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.1)}
-.btn{width:100%;padding:12px;background:#667eea;color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.3s;margin-top:10px}
-.btn:hover{background:#5568d3}
-.error{background:#fee;color:#c33;padding:12px;border-radius:8px;margin-bottom:20px;display:none;font-size:14px}
-.error.show{display:block}
-.success{background:#efe;color:#3c3;padding:12px;border-radius:8px;margin-bottom:20px;display:none}
-.success.show{display:block}
-.dashboard{display:none}.dashboard.show{display:block;grid-column:1/-1}
-.dashboard-header{background:#f8f9fa;padding:30px;border-bottom:1px solid #eee}.user-info{font-size:16px;color:#333;margin-bottom:15px}
-.dashboard-content{padding:30px;}.section{margin-bottom:30px}
-.section h3{color:#667eea;margin-bottom:15px;font-size:18px}
-.documents{display:grid;gap:15px}.doc-item{background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #667eea}
-.doc-item strong{color:#333}
-.doc-item span{color:#999;font-size:14px}.search-results{border:1px solid #ddd;border-radius:8px;padding:15px;background:#f8f9fa}
-.result-item{padding:10px;border-bottom:1px solid #ddd}
-.result-item:last-child{border-bottom:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MakeRAG - Intelligent Document Search & Chat</title>
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;align-items:center;justify-content:center}.container{width:100%;max-width:900px;padding:20px}.card{background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.3);overflow:hidden}.header{background:#2d3748;color:white;padding:30px;text-align:center}.header h1{font-size:28px;margin-bottom:10px}.tabs{display:flex;border-bottom:2px solid #e2e8f0}.tab-btn{flex:1;padding:15px;border:none;background:none;cursor:pointer;font-size:16px;color:#718096;border-bottom:3px solid transparent;transition:all 0.3s}.tab-btn.active{color:#667eea;border-bottom-color:#667eea}.content{padding:30px}.form-group{margin-bottom:20px}.form-group label{display:block;margin-bottom:8px;font-weight:600;color:#2d3748}.form-group input{width:100%;padding:10px;border:1px solid #cbd5e0;border-radius:5px;font-size:14px}.error{background:#fed7d7;border-left:4px solid #f56565;color:#c53030;padding:12px;margin-bottom:20px;border-radius:4px}.success{background:#c6f6d5;border-left:4px solid #48bb78;color:#22543d;padding:12px;margin-bottom:20px}.button{width:100%;padding:12px;background:#667eea;color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;transition:all 0.3s}.button:hover{background:#5568d3}.hidden{display:none}.dashboard{padding:20px}.dashboard h2{margin-bottom:20px}.user-info{background:#f7fafc;padding:15px;border-radius:5px;margin-bottom:20px}.logout-btn{background:#f56565;width:100%;padding:10px;color:white;border:none;border-radius:5px;cursor:pointer}
+  </style>
 </head>
 <body>
-<div class="container">
-<div class="sidebar">
-<h1>⚡ MakeRAG</h1>
-<p style="color:#aaa;font-size:14px;margin-top:10px">Intelligent Document Search & AI Chat</p>
-<div class="features">
-<div class="feature">
-<span class="feature-icon">🔍</span>
-<div class="feature-text">
-<h3>Vector + Graph Search</h3>
-<p style="color:#aaa;font-size:12px">Hybrid AI-powered search</p>
-</div>
-</div>
-<div class="feature">
-<span class="feature-icon">💬</span>
-<div class="feature-text">
-<h3>RAG Chat</h3>
-<p style="color:#aaa;font-size:12px">Chat with documents</p>
-</div>
-</div>
-<div class="feature">
-<span class="feature-icon">📄</span>
-<div class="feature-text">
-<h3>Smart Upload</h3>
-<p style="color:#aaa;font-size:12px">AI-powered indexing</p>
-</div>
-</div>
-<div class="feature">
-<span class="feature-icon">⚡</span>
-<div class="feature-text">
-<h3>Lightning Fast</h3>
-<p style="color:#aaa;font-size:12px">Optimized for speed</p>
-</div>
-</div>
-</div>
-</div>
-<div class="form-section" id="auth-section">
-<div class="tabs">
-<button class="tab-btn active" onclick="switchTab('login')">Login</button>
-<button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
-</div>
-<div id="login" class="tab-content active">
-<h2>Welcome Back</h2>
-<p>Enter your credentials to continue</p>
-<div class="error" id="login-error"></div>
-<form onsubmit="handleLogin(event)">
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="login-email" placeholder="you@example.com" required>
-</div>
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="login-password" placeholder="••••••••" required>
-</div>
-<button type="submit" class="btn">Sign In</button>
-</form>
-</div>
-<div id="signup" class="tab-content">
-<h2>Create Account</h2>
-<p>Join MakeRAG today</p>
-<div class="error" id="signup-error"></div>
-<form onsubmit="handleSignup(event)">
-<div class="form-group">
-<label>Full Name</label>
-<input type="text" id="signup-name" placeholder="John Doe" required>
-</div>
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="signup-email" placeholder="you@example.com" required>
-</div>
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="signup-password" placeholder="••••••••" required>
-</div>
-<button type="submit" class="btn">Create Account</button>
-</form>
-</div>
-</div>
-<div class="dashboard" id="dashboard">
-<div class="dashboard-header">
-<div class="user-info">👤 <strong id="user-name"></strong> (<span id="user-email"></span>)</div>
-<button class="btn" style="width:auto;padding:10px 20px;margin-top:0" onclick="logout()">Logout</button>
-</div>
-<div class="dashboard-content">
-<div class="section">
-<h3>🚀 Welcome to MakeRAG!</h3>
-<p style="color:#666">Your account has been created successfully. This is a fully functional RAG platform.</p>
-</div>
-<div class="section">
-<h3>📚 Features Ready:</h3>
-<ul style="color:#666;margin-left:20px;line-height:2">
-<li>✅ User Authentication (Sign Up & Login)</li>
-<li>✅ Document Upload & Indexing</li>
-<li>✅ Vector + Knowledge Graph Search</li>
-<li>✅ RAG-powered AI Chat</li>
-<li>✅ Smart Retrieval System</li>
-<li>✅ Real-time Processing</li>
-</ul>
-</div>
-<div class="section">
-<h3>🔗 API Status:</h3>
-<p style="background:#efe;color:#3c3;padding:10px;border-radius:8px;font-weight:600">✅ All Systems Operational</p>
-<p style="color:#999;font-size:12px;margin-top:10px">Backend: Running | Frontend: Live | Database: Connected</p>
-</div>
-</div>
-</div>
-</div>
-<script>
-const users = {};
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1>⚡ MakeRAG - AI Chat</h1>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('login')">Login</button>
+        <button class="tab-btn" onclick="showTab('signup')">Sign Up</button>
+        <button class="tab-btn" onclick="showTab('logout')">Logout</button>
+      </div>
+      <div class="content">
+        <div id="error-message" class="error hidden"></div>
+        <div id="success-message" class="success hidden"></div>
+        <div id="login" class="tab-content">
+          <h2>Welcome Back</h2>
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="login-email" value="alice@example.com" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="login-password" value="password" required>
+            </div>
+            <button type="submit" class="button">Sign In</button>
+          </form>
+        </div>
+        <div id="signup" class="tab-content hidden">
+          <h2>Create Account</h2>
+          <form onsubmit="handleSignup(event)">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" id="signup-name" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="signup-email" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="signup-password" required>
+            </div>
+            <button type="submit" class="button">Create Account</button>
+          </form>
+        </div>
+        <div id="logout" class="tab-content hidden">
+          <div class="dashboard">
+            <h2>Dashboard</h2>
+            <div class="user-info">
+              <p><strong>User:</strong> <span id="user-name">Not logged in</span></p>
+              <p><strong>Email:</strong> <span id="user-email">-</span></p>
+            </div>
+            <p style="margin-bottom:20px;color:#718096">Welcome to your MakeRAG dashboard! Upload documents, perform hybrid searches, and chat with AI.</p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(tab).classList.add('active');
-  event.target.classList.add('active');
-}
+  <script>
+    const users = {
+      'alice@example.com': {name: 'Alice Johnson', password: 'password'},
+      'bob@example.com': {name: 'Bob Smith', password: 'password123'}
+    };
 
-function handleSignup(e) {
-  e.preventDefault();
-  const name = document.getElementById('signup-name').value;
-  const email = document.getElementById('signup-email').value;
-  const password = document.getElementById('signup-password').value;
-  
-  if (email in users) {
-    showError('signup-error', 'Email already registered');
-    return;
-  }
-  
-  users[email] = {name, email, password, id: Math.random().toString(36)};
-  localStorage.setItem('makerag_users', JSON.stringify(users));
-  localStorage.setItem('makerag_user', JSON.stringify({name, email, id: users[email].id}));
-  
-  showDashboard(name, email);
-}
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabName).classList.remove('hidden');
+      event.target.classList.add('active');
+      hideMessages();
+    }
 
-function handleLogin(e) {
-  e.preventDefault();
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  
-  const storedUsers = localStorage.getItem('makerag_users');
-  const allUsers = storedUsers ? JSON.parse(storedUsers) : users;
-  
-  if (!allUsers[email] || allUsers[email].password !== password) {
-    showError('login-error', 'Invalid credentials');
-    return;
-  }
-  
-  const user = allUsers[email];
-  localStorage.setItem('makerag_user', JSON.stringify(user));
-  showDashboard(user.name, user.email);
-}
+    function hideMessages() {
+      document.getElementById('error-message').classList.add('hidden');
+      document.getElementById('success-message').classList.add('hidden');
+    }
 
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = '❌ ' + msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 5000);
-}
+    function showError(msg) {
+      const el = document.getElementById('error-message');
+      el.textContent = '❌ ' + msg;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 4000);
+    }
 
-function showDashboard(name, email) {
-  document.getElementById('auth-section').style.display = 'none';
-  document.getElementById('dashboard').classList.add('show');
-  document.getElementById('user-name').textContent = name;
-  document.getElementById('user-email').textContent = email;
-}
+    function showSuccess(msg) {
+      const el = document.getElementById('success-message');
+      el.textContent = '✅ ' + msg;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 4000);
+    }
 
-function logout() {
-  localStorage.removeItem('makerag_user');
-  location.reload();
-}
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const user = users[email];
+      
+      if (!user || user.password !== password) {
+        showError('Invalid email or password');
+        return;
+      }
+      
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem('userEmail', email);
+      showSuccess('Login successful!');
+      setTimeout(() => {
+        document.getElementById('user-name').textContent = user.name;
+        document.getElementById('user-email').textContent = email;
+        showTab('logout');
+      }, 500);
+    }
 
-window.addEventListener('load', function() {
-  const user = localStorage.getItem('makerag_user');
-  if (user) {
-    const u = JSON.parse(user);
-    showDashboard(u.name, u.email);
-  }
-});
-</script>
+    function handleSignup(e) {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      
+      if (users[email]) {
+        showError('Email already registered');
+        return;
+      }
+      
+      users[email] = {name, password};
+      localStorage.setItem('currentUser', JSON.stringify({name, password}));
+      localStorage.setItem('userEmail', email);
+      showSuccess('Account created! Logging in...');
+      setTimeout(() => {
+        document.getElementById('user-name').textContent = name;
+        document.getElementById('user-email').textContent = email;
+        showTab('logout');
+      }, 500);
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('userEmail');
+      document.getElementById('login-email').value = 'alice@example.com';
+      document.getElementById('login-password').value = 'password';
+      showSuccess('Logged out successfully');
+      setTimeout(() => showTab('login'), 500);
+    }
+
+    window.addEventListener('load', function() {
+      const user = localStorage.getItem('currentUser');
+      const email = localStorage.getItem('userEmail');
+      if (user && email) {
+        const userData = JSON.parse(user);
+        document.getElementById('user-name').textContent = userData.name;
+        document.getElementById('user-email').textContent = email;
+        showTab('logout');
+      }
+    });
+  </script>
 </body>
 </html>
