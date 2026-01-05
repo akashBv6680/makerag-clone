@@ -16,33 +16,19 @@ jobs:
       contents: read
       pages: write
       id-token: write
-
+    
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: npm install
-
-      - name: Build React app
-        working-directory: ./frontend
-        run: npm run build
-
-      - name: Upload artifact
+      
+      - name: Upload static files to GitHub Pages
         uses: actions/upload-pages-artifact@v4
         with:
-          name: github-pages
-          path: 'frontend/build'
-
+          path: 'frontend/public'
+      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
+      
       - name: Deployment Summary
         run: |
           echo "✅ Frontend deployed successfully!"
