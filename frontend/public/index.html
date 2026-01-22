@@ -214,93 +214,39 @@ function switchTab(tab) {
   event.target.classList.add('active');
 }
 
+}
+
 async function handleLogin(e) {
-  e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  
-  try {
-    const response = await fetch(`${API_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     
-    const data = await response.json();
-    
-    if (!response.ok) {
-      showAlert(data.detail || 'Login failed', 'error');
-      return;
+    if (email && password) {
+        localStorage.setItem('user', JSON.stringify({ email, name: 'User', token: 'demo-token' }));
+        showAlert('✅ Login successful!', 'success');
+        setTimeout(() => window.location.href = 'app.html', 500);
+    } else {
+        showAlert('❌ Please enter email and password', 'error');
     }
-    
-    localStorage.setItem('user', JSON.stringify({
-      email,
-      name: data.user_name,
-      token: data.access_token,
-      userId: data.user_id
-    }));
-    
-    showAlert('✅ Login successful!', 'success');
-    setTimeout(() => {
-      document.getElementById('user-name').textContent = data.user_name;
-      document.getElementById('user-email').textContent = email;
-      window.location.href = 'app.html';
-    }, 500);
-  } catch (error) {
-    showAlert('❌ Network error: ' + error.message, 'error');
-  }
 }
 
 async function handleSignup(e) {
-  e.preventDefault();
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('signup-email').value;
-  const password = document.getElementById('signup-password').value;
-  
-  try {
-    const response = await fetch(`${API_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
-    });
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
     
-    const data = await response.json();
-    
-    if (!response.ok) {
-      showAlert(data.detail || 'Registration failed', 'error');
-      return;
+    if (name && email && password) {
+        localStorage.setItem('user', JSON.stringify({ email, name, token: 'demo-token' }));
+        showAlert('✅ Account created!', 'success');
+        setTimeout(() => window.location.href = 'app.html', 500);
+    } else {
+        showAlert('❌ Please fill all fields', 'error');
     }
-    
-    localStorage.setItem('user', JSON.stringify({
-      email,
-      name: data.user_name,
-      token: data.access_token,
-      userId: data.user_id
-    }));
-    
-    showAlert('✅ Account created! Logging in...', 'success');
-    setTimeout(() => {
-      document.getElementById('user-name').textContent = data.user_name;
-      document.getElementById('user-email').textContent = email;
-      window.location.href = 'app.html';
-    }, 500);
-  } catch (error) {
-    showAlert('❌ Network error: ' + error.message, 'error');
-      window.location.href = 'app.html';document.getElementById('user-name').textContent = data.user_name;
-      document.getElementById('user-email').textContent = email;
-      window.location.href = 'app.html';    window.location.href = 'app.html';
-}
-
-function handleLogout() {
-  localStorage.removeItem('user');
-  showAlert('✅ Logged out successfully', 'success');
-  document.getElementById('email').value = '';
-  document.getElementById('password').value = '';
-  setTimeout(() => switchTab('login'), 500);
 }
 
 function checkUser() {
-  const user = localStorage.getItem('user');
+    const user = localStorage.getItem('user');
   if (user) {
     const { email, name } = JSON.parse(user);
     document.getElementById('user-name').textContent = name;
