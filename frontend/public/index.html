@@ -197,85 +197,118 @@
     </div>
 
     <script>
-        const USERS = {
-            'alice@example.com': { name: 'Alice Johnson', password: 'password' },
-            'bob@example.com': { name: 'Bob Smith', password: 'password123' }
-        };
+// Backend API URL  
+const API_URL = 'https://makerag-clone.onrender.com';
 
-        function showAlert(msg, type = 'success') {
-            const alert = document.getElementById('alert');
-            alert.textContent = msg;
-            alert.className = 'alert show ' + type;
-            setTimeout(() => alert.className = 'alert', 4000);
-        }
+function showAlert(msg, type = 'success') {
+  const alert = document.getElementById('alert');
+  alert.textContent = msg;
+  alert.className = 'alert show ' + type;
+  setTimeout(() => alert.className = 'alert', 4000);
+}
 
-        function switchTab(tab) {
-            document.querySelectorAll('[id$="-tab"]').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tab + '-tab').classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+function switchTab(tab) {
+  document.querySelectorAll('[id$="-tab"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById(tab + '-tab').classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const user = USERS[email];
+async function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      showAlert(data.detail || 'Login failed', 'error');
+      return;
+    }
+    
+    localStorage.setItem('user', JSON.stringify({
+      email,
+      name: data.user_name,
+      token: data.access_token,
+      userId: data.user_id
+    }));
+    
+    showAlert('✅ Login successful!', 'success');
+    setTimeout(() => {
+      document.getElementById('user-name').textContent = data.user_name;
+      document.getElementById('user-email').textContent = email;
+      switchTab('dashboard');
+    }, 500);
+  } catch (error) {
+    showAlert('❌ Network error: ' + error.message, 'error');
+  }
+}
 
-            if (!user || user.password !== password) {
-                showAlert('Invalid email or password', 'error');
-                return;
-            }
+async function handleSignup(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      showAlert(data.detail || 'Registration failed', 'error');
+      return;
+    }
+    
+    localStorage.setItem('user', JSON.stringify({
+      email,
+      name: data.user_name,
+      token: data.access_token,
+      userId: data.user_id
+    }));
+    
+    showAlert('✅ Account created! Logging in...', 'success');
+    setTimeout(() => {
+      document.getElementById('user-name').textContent = data.user_name;
+      document.getElementById('user-email').textContent = email;
+      switchTab('dashboard');
+    }, 500);
+  } catch (error) {
+    showAlert('❌ Network error: ' + error.message, 'error');
+  }
+}
 
-            localStorage.setItem('user', JSON.stringify({ email, name: user.name }));
-            showAlert('✅ Login successful!', 'success');
-            setTimeout(() => {
-                document.getElementById('user-name').textContent = user.name;
-                document.getElementById('user-email').textContent = email;
-                switchTab('dashboard');
-            }, 500);
-        }
+function handleLogout() {
+  localStorage.removeItem('user');
+  showAlert('✅ Logged out successfully', 'success');
+  document.getElementById('email').value = '';
+  document.getElementById('password').value = '';
+  setTimeout(() => switchTab('login'), 500);
+}
 
-        function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
+function checkUser() {
+  const user = localStorage.getItem('user');
+  if (user) {
+    const { email, name } = JSON.parse(user);
+    document.getElementById('user-name').textContent = name;
+    document.getElementById('user-email').textContent = email;
+    switchTab('dashboard');
+  }
+}
 
-            if (USERS[email]) {
-                showAlert('Email already exists', 'error');
-                return;
-            }
+window.addEventListener('load', checkUser);
+</script>
 
-            USERS[email] = { name, password };
-            localStorage.setItem('user', JSON.stringify({ email, name }));
-            showAlert('✅ Account created! Logging in...', 'success');
-            setTimeout(() => {
-                document.getElementById('user-name').textContent = name;
-                document.getElementById('user-email').textContent = email;
-                switchTab('dashboard');
-            }, 500);
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('user');
-            showAlert('✅ Logged out successfully', 'success');
-            document.getElementById('email').value = 'alice@example.com';
-            document.getElementById('password').value = 'password';
-            setTimeout(() => switchTab('login'), 500);
-        }
-
-        function checkUser() {
-            const user = localStorage.getItem('user');
-            if (user) {
-                const { email, name } = JSON.parse(user);
-                document.getElementById('user-name').textContent = name;
-                document.getElementById('user-email').textContent = email;
-                switchTab('dashboard');
-            }
-        }
-
-        window.addEventListener('load', checkUser);
-    </script>
 </body>
 </html>
