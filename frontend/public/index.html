@@ -286,7 +286,9 @@ async function handleSignup(e) {
     }, 500);
   } catch (error) {
     showAlert('❌ Network error: ' + error.message, 'error');
-  }
+      window.location.href = 'app.html';document.getElementById('user-name').textContent = data.user_name;
+      document.getElementById('user-email').textContent = email;
+      switchTab('dashboard');    window.location.href = 'app.html';
 }
 
 function handleLogout() {
