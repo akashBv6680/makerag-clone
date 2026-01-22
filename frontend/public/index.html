@@ -212,9 +212,6 @@ function switchTab(tab) {
   document.getElementById(tab + '-tab').classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   event.target.classList.add('active');
-}
-
-}
 
 async function handleLogin(e) {
     e.preventDefault();
@@ -256,6 +253,19 @@ function checkUser() {
 }
 
 window.addEventListener('load', checkUser);
+
+        function handleLogout() {
+    localStorage.removeItem('user');
+    showAlert('✅ Logged out successfully', 'success');
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    setTimeout(() => switchTab('login'), 500);
+}
+
+// Attach event listeners
+document.getElementById('login-tab').querySelector('form').addEventListener('submit', handleLogin);
+document.getElementById('signup-tab').querySelector('form').addEventListener('submit', handleSignup);
+
 </script>
 
 </body>
