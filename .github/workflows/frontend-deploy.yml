@@ -1,4 +1,5 @@
 name: Deploy Frontend to GitHub Pages
+
 on:
   push:
     branches:
@@ -11,22 +12,32 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    
+    # Environment configuration for GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     permissions:
       contents: read
       pages: write
       id-token: write
     
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
       
       - name: Upload static files to GitHub Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           path: 'frontend/public'
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
       
       - name: Deployment Summary
         run: |
