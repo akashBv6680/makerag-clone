@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-  paths:
-    - 'frontend/**'
-    - '.github/workflows/frontend-deploy.yml'
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-deploy.yml'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +18,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     
-    # Environment configuration for GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
